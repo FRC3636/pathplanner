@@ -262,7 +262,7 @@ public class PathfindingCommand extends Command {
       }
     }
 
-    if (currentPose.getTranslation().getDistance(targetPose.getTranslation()) < 0.5) {
+    if (currentPose.getTranslation().getDistance(targetPose.getTranslation()) < 0.25) {
       output.accept(new ChassisSpeeds(), DriveFeedforwards.zeros(robotConfig.numModules));
       finish = true;
     } else {
