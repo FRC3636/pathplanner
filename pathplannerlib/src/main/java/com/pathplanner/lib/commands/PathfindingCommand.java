@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -262,7 +263,7 @@ public class PathfindingCommand extends Command {
       }
     }
 
-    if (currentPose.getTranslation().getDistance(targetPose.getTranslation()) < 0.25) {
+    if (currentPose.getTranslation().getDistance(targetPose.getTranslation()) < Units.inchesToMeters(2.0)) {
       output.accept(new ChassisSpeeds(), DriveFeedforwards.zeros(robotConfig.numModules));
       finish = true;
     } else {
@@ -386,14 +387,14 @@ public class PathfindingCommand extends Command {
 
     if (targetPath != null && !targetPath.isChoreoPath()) {
       Pose2d currentPose = poseSupplier.get();
-      ChassisSpeeds currentSpeeds = speedsSupplier.get();
 
-      double currentVel =
-          Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
-      double stoppingDistance = Math.pow(currentVel, 2) / (2 * constraints.maxAccelerationMPSSq());
+      double stoppingDistance = Units.inchesToMeters(2.0);
 
-      return currentPose.getTranslation().getDistance(targetPose.getTranslation())
-          <= stoppingDistance;
+      double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
+
+      System.out.println("We are " + distance + "m away");
+
+      return distance <= stoppingDistance;
     }
 
     if (currentTrajectory != null) {
