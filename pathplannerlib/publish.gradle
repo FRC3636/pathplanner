@@ -42,7 +42,7 @@ ext.addTaskToCopyAllOutputs = { task ->
     copyAllOutputs.from task.archiveFile
 }
 
-def artifactGroupId = 'com.pathplanner.lib'
+def artifactGroupId = 'com.frcteam3636.betas'
 def baseArtifactId = 'PathplannerLib'
 def zipBaseName = "_GROUP_com_pathplanner_lib_ID_${baseArtifactId}-cpp_CLS"
 def javaBaseName = "_GROUP_com_pathplanner_lib_ID_${baseArtifactId}-java_CLS"
