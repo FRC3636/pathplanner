@@ -264,13 +264,6 @@ public class PathPlannerTrajectory {
         state.heading = states.get(i - 1).heading;
       }
 
-      if (!config.isHolonomic) {
-        state.pose =
-            new Pose2d(
-                state.pose.getTranslation(),
-                path.isReversed() ? (state.heading.plus(Rotation2d.k180deg)) : state.heading);
-      }
-
       if (i != 0) {
         state.deltaPos =
             state.pose.getTranslation().getDistance(states.get(i - 1).pose.getTranslation());
@@ -382,7 +375,7 @@ public class PathPlannerTrajectory {
               accelVec.getX(), accelVec.getY(), angularAccel, state.pose.getRotation());
       var accelStates = config.toSwerveModuleStates(chassisAccel);
       for (int m = 0; m < config.numModules; m++) {
-        double moduleAcceleration = accelStates[m].speedMetersPerSecond;
+        double moduleAcceleration = Math.abs(accelStates[m].speedMetersPerSecond);
 
         // Calculate the module velocity at the current state
         // vf^2 = v0^2 + 2ad
@@ -527,7 +520,7 @@ public class PathPlannerTrajectory {
               state.pose.getRotation());
       var accelStates = config.toSwerveModuleStates(chassisAccel);
       for (int m = 0; m < config.numModules; m++) {
-        double moduleAcceleration = accelStates[m].speedMetersPerSecond;
+        double moduleAcceleration = Math.abs(accelStates[m].speedMetersPerSecond);
 
         // Calculate the module velocity at the current state
         // vf^2 = v0^2 + 2ad

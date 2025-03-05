@@ -480,10 +480,6 @@ def _generateStates(states: List[PathPlannerTrajectoryState], path: PathPlannerP
         else:
             state.heading = states[i - 1].heading
 
-        if not config.isHolonomic:
-            state.pose = Pose2d(state.pose.translation(),
-                                (state.heading + Rotation2d.fromDegrees(180)) if path.isReversed() else state.heading)
-
         if i != 0:
             state.deltaPos = state.pose.translation().distance(states[i - 1].pose.translation())
             state.deltaRot = state.pose.rotation() - states[i - 1].pose.rotation()
@@ -564,7 +560,7 @@ def _forwardAccelPass(states: List[PathPlannerTrajectoryState], config: RobotCon
                                                              state.pose.rotation())
         accelStates = config.toSwerveModuleStates(chassisAccel)
         for m in range(config.numModules):
-            moduleAcceleration = accelStates[m].speed
+            moduleAcceleration = abs(accelStates[m].speed)
 
             # Calculate the module velocity at the current state
             # vf^2 = v0^2 + 2ad
@@ -669,7 +665,7 @@ def _reverseAccelPass(states: List[PathPlannerTrajectoryState], config: RobotCon
                                                              state.pose.rotation())
         accelStates = config.toSwerveModuleStates(chassisAccel)
         for m in range(config.numModules):
-            moduleAcceleration = accelStates[m].speed
+            moduleAcceleration = abs(accelStates[m].speed)
 
             # Calculate the module velocity at the current state
             # vf^2 = v0^2 + 2ad

@@ -288,13 +288,6 @@ void PathPlannerTrajectory::generateStates(
 			state.heading = states[i - 1].heading;
 		}
 
-		if (!config.isHolonomic) {
-			state.pose = frc::Pose2d(state.pose.Translation(),
-					path->isReversed() ?
-							(state.heading + frc::Rotation2d(180_deg)) :
-							state.heading);
-		}
-
 		if (i != 0) {
 			state.deltaPos = state.pose.Translation().Distance(
 					states[i - 1].pose.Translation());
@@ -420,7 +413,7 @@ void PathPlannerTrajectory::forwardAccelPass(
 		auto accelStates = config.toSwerveModuleStates(chassisAccel);
 		for (size_t m = 0; m < config.numModules; m++) {
 			units::meters_per_second_squared_t moduleAcceleration {
-					accelStates[m].speed() };
+					units::math::abs(accelStates[m].speed)() };
 
 			// Calculate the module velocity at the current state
 			// vf^2 = v0^2 + 2ad
@@ -580,7 +573,7 @@ void PathPlannerTrajectory::reverseAccelPass(
 		auto accelStates = config.toSwerveModuleStates(chassisAccel);
 		for (size_t m = 0; m < config.numModules; m++) {
 			units::meters_per_second_squared_t moduleAcceleration {
-					accelStates[m].speed() };
+					units::math::abs(accelStates[m].speed)() };
 
 			// Calculate the module velocity at the current state
 			// vf^2 = v0^2 + 2ad
