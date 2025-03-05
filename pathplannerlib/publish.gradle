@@ -1,8 +1,9 @@
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 ext.licenseFile = files("$rootDir/LICENSE.txt")
 
-def pubVersion = '0.0.2'
+def pubVersion = '0.0.3'
 
 def outputsFolder = file("$buildDir/outputs")
 
@@ -150,7 +151,7 @@ model {
         def taskList = createComponentZipTasks($.components, ['PathplannerLib'], zipBaseName, Zip, project, includeStandardZipFormat)
 
         publications {
-            cpp(MavenPublication) {
+            create("cpp", MavenPublication) {
                 taskList.each {
                     artifact it
                 }
@@ -162,7 +163,7 @@ model {
                 version pubVersion
             }
 
-            java(MavenPublication) {
+            create("java", MavenPublication) {
                 artifact jar
                 artifact sourcesJar
                 artifact javadocJar
@@ -170,7 +171,38 @@ model {
                 artifactId = "${baseArtifactId}-java"
                 groupId artifactGroupId
                 version pubVersion
+
+                pom {
+                    name = 'FRC3636 PathPlanner'
+                    description = 'Fork of PathPlanner used by FRC 3636'
+                    url = 'https://github.com/frc3636/pathplanner'
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'frc3636'
+                            name = 'FRC Team 3636'
+                            email = 'frcteam3636@gmail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/frc3636/pathplanner.git'
+                        developerConnection = 'scm:git:ssh://github.com/frc3636/pathplanner.git'
+                        url = 'https://github.com/frc3636/pathplanner'
+                    }
+                }
             }
         }
+    }
+}
+
+signing {
+    useGpgCmd()
+    publishing.publications.configureEach {
+        sign it
     }
 }
